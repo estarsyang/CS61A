@@ -48,6 +48,10 @@ def repeated(f, n):
     True
     """
     "*** YOUR CODE HERE ***"
+    if n == 0:
+        return lambda x:x
+    else:
+        return compose1(f, repeated(f, n-1))
 
 
 def num_eights(x):
@@ -72,7 +76,9 @@ def num_eights(x):
     True
     """
     "*** YOUR CODE HERE ***"
-
+    if x == 0:
+        return 0
+    return num_eights(x // 10) + (x % 10 == 8)
 
 def pingpong(n):
     """Return the nth element of the ping-pong sequence.
@@ -107,4 +113,13 @@ def pingpong(n):
     True
     """
     "*** YOUR CODE HERE ***"
+    def helper(i, state, direction):
+        if i == n:
+            return state
+        if num_eights(i) != 0 or i % 8 == 0:
+            return helper(i + 1, state - direction, direction*-1)
+        else:
+            return helper(i + 1, state + direction, direction)
+
+    return helper(1, 1, 1)
 
