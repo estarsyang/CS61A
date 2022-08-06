@@ -6,7 +6,7 @@ def coords(fn, seq, lower, upper):
     [[-2, 4], [1, 1], [3, 9]]
     """
     "*** YOUR CODE HERE ***"
-    return ______
+    return [[e, fn(e)] for e in seq if fn(e) <= upper and fn(e) >= lower]
 
 
 def riffle(deck):
@@ -19,7 +19,8 @@ def riffle(deck):
     [0, 10, 1, 11, 2, 12, 3, 13, 4, 14, 5, 15, 6, 16, 7, 17, 8, 18, 9, 19]
     """
     "*** YOUR CODE HERE ***"
-    return _______
+    M = len(deck) // 2 
+    return [deck[k//2 + M*(k % 2)] for k in range(len(deck))]
 
 
 def berry_finder(t):
@@ -40,6 +41,13 @@ def berry_finder(t):
     True
     """
     "*** YOUR CODE HERE ***"
+    if label(t) == 'berry':
+        return True
+    else:
+        for b in branches(t):
+            if berry_finder(b):
+                return True
+        return False
 
 
 def sprout_leaves(t, leaves):
@@ -76,6 +84,10 @@ def sprout_leaves(t, leaves):
           2
     """
     "*** YOUR CODE HERE ***"
+    if is_leaf(t):
+        return tree(label(t), [tree(leave) for leave in leaves])
+    else:
+        return tree(label(t), [sprout_leaves(b, leaves) for b in branches(t)])
 
 # Abstraction tests for sprout_leaves and berry_finder
 def check_abstraction():
