@@ -7,7 +7,7 @@ def insert_into_all(item, nested_list):
     >>> insert_into_all(0, nl)
     [[0], [0, 1, 2], [0, 3]]
     """
-    return ______________________________
+    return [[item] + lst for lst in nested_list]
 
 def subseqs(s):
     """Assuming that S is a list, return a nested list of all subsequences
@@ -19,11 +19,11 @@ def subseqs(s):
     >>> subseqs([])
     [[]]
     """
-    if ________________:
-        ________________
+    if s == []:
+        return [[]]
     else:
-        ________________
-        ________________
+        subset = subseqs(s[1:])
+        return subset + insert_into_all(s[0], subset)
 
 
 def inc_subseqs(s):
@@ -42,14 +42,14 @@ def inc_subseqs(s):
     """
     def subseq_helper(s, prev):
         if not s:
-            return ____________________
+            return [[]]
         elif s[0] < prev:
-            return ____________________
+            return subseq_helper(s[1:], prev)
         else:
-            a = ______________________
-            b = ______________________
-            return insert_into_all(________, ______________) + ________________
-    return subseq_helper(____, ____)
+            a = subseq_helper(s[1:], s[0]) # included
+            b = subseq_helper(s[1:], prev) # excluded
+            return insert_into_all(s[0], a) + b
+    return subseq_helper(s, 0)
 
 
 def trade(first, second):
@@ -81,9 +81,9 @@ def trade(first, second):
     """
     m, n = 1, 1
 
-    equal_prefix = lambda: ______________________
-    while _______________________________:
-        if __________________:
+    equal_prefix = lambda: sum(first[:m]) == sum(second[:n])
+    while m <= len(first) and n <= len(second) and not equal_prefix():
+        if sum(first[:m]) < sum(second[:n]):
             m += 1
         else:
             n += 1
@@ -108,6 +108,10 @@ def reverse(lst):
     [-8, 72, 42]
     """
     "*** YOUR CODE HERE ***"
+    l = len(lst)
+    for item in range(l):
+        last = lst.pop()
+        lst.insert(item, last)
 
 
 cs61a = {
@@ -135,6 +139,14 @@ def make_glookup(class_assignments):
     0.8913043478260869
     """
     "*** YOUR CODE HERE ***"
+    current_point, current_total= 0, 0
+    def glookup(assignment, point):
+        nonlocal current_point, current_total
+        current_point += point
+        current_total += class_assignments[assignment]
+        return current_point / current_total
+    return glookup
+
 
 
 def num_trees(n):
@@ -157,9 +169,9 @@ def num_trees(n):
     429
 
     """
-    if ____________________:
-        return _______________
-    return _______________
+    if n == 1 or n == 2:
+        return 1
+    return num_trees(n - 1) * 2 * (2*n -3) // n
 
 
 def make_advanced_counter_maker():
@@ -191,13 +203,25 @@ def make_advanced_counter_maker():
     >>> tom_counter('global-count')
     1
     """
-    ________________
-    def ____________(__________):
-        ________________
-        def ____________(__________):
-            ________________
+    global_count =  0
+    def do_counter():
+        nonlocal global_count
+        base_number = 0
+        def action_counter(key):
+            nonlocal base_number,global_count
             "*** YOUR CODE HERE ***"
             # as many lines as you want
-        ________________
-    ________________
+            if key == 'count':
+                base_number += 1
+                print(base_number)
+            elif key == 'reset':
+                base_number = 0
+            elif key == 'global-count':
+                global_count += 1
+                print(global_count)
+            elif key == 'global-reset':
+                global_count = 0
+            
+        return action_counter
+    return do_counter
 
