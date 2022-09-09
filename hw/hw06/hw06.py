@@ -184,7 +184,40 @@ def is_bst(t):
     False
     """
     "*** YOUR CODE HERE ***"
-
+    def bst_max(t):
+        if t.is_leaf():
+            return t.label
+        elif len(t.branches) == 1:
+            if t.label > t.branches[0].label:
+                return t.label
+            else:
+                return bst_max(t.branches[0])
+        else:
+            return bst_max(t.branches[1])
+        
+    def bst_min(t):
+        if t.is_leaf():
+            return t.label
+        elif len(t.branches) == 1:
+            if t.label > t.branches[0].label:
+                return bst_min(t.branches[0])
+            else:
+                return t.label
+        else:
+            return bst_min(t.branches[0])
+    
+    if t.is_leaf():
+        return True
+    elif len(t.branches) == 1:
+        if t.label > t.branches[0].label:
+            return is_bst(t.branches[0]) and t.label >= bst_max(t.branches[0])
+        else:
+            return is_bst(t.branches[0]) and t.label < bst_min(t.branches[0])
+    elif len(t.branches) == 2:
+        left, right = t.branches
+        return is_bst(left) and is_bst(right) and (bst_max(left) <= t.label < bst_min(right))
+    else: 
+        return False
 
 def store_digits(n):
     """Stores the digits of a positive number n in a linked list.
@@ -202,6 +235,31 @@ def store_digits(n):
     >>> print("Do not use str or reversed!") if any([r in cleaned for r in ["str", "reversed"]]) else None
     """
     "*** YOUR CODE HERE ***"
+    # lst = []
+    # while n > 10:
+    #     last_num = n % 10
+    #     lst = [last_num] + lst
+    #     n = int(n / 10)
+    # lst = [n] + lst
+
+
+    # def list_to_link(lst):
+    #     if len(lst) == 1:
+    #         return Link(lst[0])
+    #     return Link(lst[0], list_to_link(lst[1:]))
+    
+    # s = list_to_link(lst)
+    # return s
+
+
+    # use base number to be last one Link, recursion to add it to other link's rest
+    def helper(lst,n):
+        if n == 0:
+            return lst
+        lst = Link( n % 10, lst)
+        return helper(lst, n // 10)
+    ans = Link(n%10, Link.empty)
+    return helper(ans, n // 10)
 
 
 def path_yielder(t, value):
@@ -240,11 +298,12 @@ def path_yielder(t, value):
     """
 
     "*** YOUR CODE HERE ***"
-
-    for _______________ in _________________:
-        for _______________ in _________________:
-
-            "*** YOUR CODE HERE ***"
+    if t.label == value:
+        yield [value]
+    for b in t.branches:
+        for path in path_yielder(b, value):
+            yield [t.label] + path
+            
 
 
 def remove_all(link , value):
